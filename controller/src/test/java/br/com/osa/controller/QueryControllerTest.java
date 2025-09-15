@@ -57,7 +57,7 @@ public class QueryControllerTest {
   @Test
   void whenSummary_accountNotFound_thenThrowsResourceNotFoundException() {
     when(queryService.getBalance(any())).thenThrow(
-        new ResourceNotFoundException("Conta não encontrada"));
+        new ResourceNotFoundException("Account not found"));
 
     Principal principal = () -> UUID.randomUUID().toString();
 
@@ -65,8 +65,7 @@ public class QueryControllerTest {
       controller.summary(principal);
     } catch (Exception ex) {
       assertInstanceOf(ResourceNotFoundException.class, ex);
-      assertEquals("Conta não encontrada", ex.getMessage());
+      assertEquals("Account not found", ex.getMessage());
     }
   }
 }
-
