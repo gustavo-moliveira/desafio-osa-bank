@@ -39,16 +39,16 @@ public class AuthController {
   }
 
   public record RegisterRequest(
-      @NotBlank(message = "Nome completo é obrigatório")
+      @NotBlank(message = "Full name is required")
       String fullName,
 
-      @NotBlank(message = "CPF é obrigatório")
+      @NotBlank(message = "CPF is required")
       String cpf,
 
-      @NotBlank(message = "Login é obrigatório")
+      @NotBlank(message = "Login is required")
       String login,
 
-      @NotBlank(message = "Senha é obrigatória")
+      @NotBlank(message = "Password is required")
       String password
   ) {
 
