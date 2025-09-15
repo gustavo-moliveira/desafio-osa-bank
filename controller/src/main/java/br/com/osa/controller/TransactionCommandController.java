@@ -32,7 +32,7 @@ public class TransactionCommandController {
       @Valid @RequestBody MoneyRequest request) {
     UUID userId = UUID.fromString(principal.getName());
     accountService.deposit(userId, format(request.amount));
-    return ResponseEntity.ok(Map.of("message", "Depósito realizado com sucesso"));
+    return ResponseEntity.ok(Map.of("message", "Deposito realizado com sucesso"));
   }
 
   @PostMapping("/withdraw")
