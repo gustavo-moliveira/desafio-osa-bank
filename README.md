@@ -21,7 +21,7 @@ Este projeto simula um sistema bancário moderno, com separação clara entre es
 ---
 
 ## 🧠 Arquitetura
-<img width="998" height="769" alt="image" src="https://github.com/user-attachments/assets/0045d8e8-9f3d-441a-afe0-dcfa613e6b35" />
+<img width="1012" height="762" alt="image" src="https://github.com/user-attachments/assets/b4d820d5-e13b-45b7-8ede-3a50b9fa1ab2" />
 
 ---
 
@@ -100,4 +100,5 @@ Incluem exemplos completos de:
 ### 🧪 Testes e Qualidade
 - Testes de integração com Testcontainers Para validar fluxos completos com Redis, MongoDB e banco relacional em ambiente isolado;
 - Cobertura de código com JaCoCo + SonarQube Para identificar pontos frágeis e garantir qualidade contínua.
+
 
