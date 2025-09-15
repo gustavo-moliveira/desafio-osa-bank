@@ -8,6 +8,7 @@ import br.com.port.read.BalanceCachePort;
 import br.com.port.read.HistoryReadPort;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class QueryService {
@@ -25,33 +26,34 @@ public class QueryService {
   }
 
   public BigDecimal getBalance(UUID userId) {
-    UUID accountId = accountRepositoryPort.findByUserId(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"))
-        .getId();
+    Account account = findAccountOrThrow(userId);
+    UUID accountId = account.getId();
 
-    BigDecimal cached = balanceCachePort.getBalance(accountId);
-    if (cached != null) {
-      return cached;
+    Optional<BigDecimal> cachedOpt = balanceCachePort.getBalance(accountId);
+    if (cachedOpt.isPresent()) {
+      return cachedOpt.get();
     }
 
-    Account account = accountRepositoryPort.findByUserId(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
-
-    BigDecimal saldoAjustado = account.getBalance();
-    if (account.getNegativeDebt().compareTo(BigDecimal.ZERO) > 0) {
-      saldoAjustado = saldoAjustado.subtract(account.getNegativeDebt());
-    }
-
-    balanceCachePort.setBalance(accountId, saldoAjustado);
-
-    return saldoAjustado;
+    BigDecimal adjusted = calculateAdjustedBalance(account);
+    balanceCachePort.setBalance(accountId, adjusted);
+    return adjusted;
   }
 
-
   public List<Transaction> getHistory(UUID userId) {
-    UUID accountId = accountRepositoryPort.findByUserId(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"))
-        .getId();
-    return historyReadPort.get(accountId);
+    Account account = findAccountOrThrow(userId);
+    return historyReadPort.get(account.getId());
+  }
+
+  private Account findAccountOrThrow(UUID userId) {
+    return accountRepositoryPort.findByUserId(userId)
+        .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+  }
+
+  private BigDecimal calculateAdjustedBalance(Account account) {
+    BigDecimal balance = account.getBalance();
+    if (account.getNegativeDebt().compareTo(BigDecimal.ZERO) > 0) {
+      balance = balance.subtract(account.getNegativeDebt());
+    }
+    return balance;
   }
 }
