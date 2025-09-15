@@ -18,8 +18,8 @@ public class AccountRepositoryAdapter implements AccountRepositoryPort {
   }
 
   @Override
-  public Account save(Account account) {
-    return AccountMapper.toDomain(repository.save(AccountMapper.toEntity(account)));
+  public void save(Account account) {
+    AccountMapper.toDomain(repository.save(AccountMapper.toEntity(account)));
   }
 
   @Override
