@@ -12,8 +12,12 @@ import br.com.port.read.BalanceCachePort;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AuthService {
+
+  private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
   private final UserRepositoryPort userRepositoryPort;
   private final AccountRepositoryPort accountRepositoryPort;
@@ -31,14 +35,17 @@ public class AuthService {
   }
 
   public User register(String fullName, String cpf, String login, String password) {
+    logger.info("Register request for login='{}'", login);
     validateFields(fullName, cpf, login, password);
 
     if (!CpfValidator.isValid(cpf)) {
-      throw new ValidationException("CPF inválido");
+      logger.warn("Invalid CPF provided for login='{}'", login);
+      throw new ValidationException("Invalid CPF");
     }
 
     if (userRepositoryPort.existsByCpf(cpf) || userRepositoryPort.existsByLogin(login)) {
-      throw new BusinessException("Usuário já cadastrado");
+      logger.warn("Attempt to register existing user for login='{}'", login);
+      throw new BusinessException("User already registered");
     }
 
     UUID userId = UUID.randomUUID();
@@ -50,30 +57,38 @@ public class AuthService {
     accountRepositoryPort.save(account);
     balanceCachePort.setBalance(account.getId(), BigDecimal.ZERO);
 
+    logger.info("User registered successfully login='{}' userId='{}'", login, userId);
     return user;
   }
 
   private void validateFields(String fullName, String cpf, String login, String password) {
-    if (fullName == null || fullName.trim().isEmpty()) {
-      throw new ValidationException("Nome completo é obrigatório");
-    }
-    if (cpf == null || cpf.trim().isEmpty()) {
-      throw new ValidationException("CPF é obrigatório");
-    }
-    if (login == null || login.trim().isEmpty()) {
-      throw new ValidationException("Login é obrigatório");
-    }
-    if (password == null || password.trim().isEmpty()) {
-      throw new ValidationException("Senha é obrigatória");
-    }
+    checkRequired(fullName, "Full name");
+    checkRequired(cpf, "CPF");
+    checkRequired(login, "Login");
+    checkRequired(password, "Password");
   }
 
   public Optional<User> authenticate(String login, String password) {
+    logger.info("Authentication attempt for login='{}'", login);
     Optional<User> user = userRepositoryPort.findByLogin(login);
     if (user.isEmpty()) {
+      logger.debug("Authentication failed: user not found for login='{}'", login);
       return Optional.empty();
     }
     boolean ok = passwordEncoderPort.matches(password, user.get().getPasswordHash());
+    if (ok) {
+      logger.info("Authentication successful for login='{}' userId='{}'", login, user.get().getId());
+    } else {
+      logger.warn("Authentication failed for login='{}'", login);
+    }
     return ok ? user : Optional.empty();
   }
+
+  private void checkRequired(String value, String fieldName) {
+    if (value == null || value.trim().isEmpty()) {
+      logger.warn("Validation failed: {} is required", fieldName);
+      throw new ValidationException(fieldName + " is required");
+    }
+  }
+
 }

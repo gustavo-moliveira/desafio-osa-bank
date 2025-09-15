@@ -35,7 +35,7 @@ public class AccountService {
     validateUserId(userId);
 
     Account account = accountRepositoryPort.findByUserId(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
+        .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
     Account updated = account.deposit(amount);
     accountRepositoryPort.save(updated);
@@ -58,7 +58,7 @@ public class AccountService {
     validateUserId(userId);
 
     Account account = accountRepositoryPort.findByUserId(userId)
-        .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
+        .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
     Account updated = account.withdraw(amount);
     accountRepositoryPort.save(updated);
@@ -86,16 +86,16 @@ public class AccountService {
 
   private void validateUserId(UUID userId) {
     if (userId == null) {
-      throw new ValidationException("Identificador de usuário inválido");
+      throw new ValidationException("Invalid user identifier");
     }
   }
 
   private void validateAmount(BigDecimal amount) {
     if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new ValidationException("Valor da transação deve ser maior que zero");
+      throw new ValidationException("Transaction amount must be greater than zero");
     }
     if (amount.scale() > 2) {
-      throw new ValidationException("Valor deve ter no máximo duas casas decimais");
+      throw new ValidationException("Amount must have at most two decimal places");
     }
   }
 }
