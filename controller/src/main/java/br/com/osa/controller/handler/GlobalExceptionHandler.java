@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex,
       HttpServletRequest request) {
-    return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno inesperado",
+    return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected internal error",
         request.getRequestURI(), List.of("internal_error"));
   }
 
