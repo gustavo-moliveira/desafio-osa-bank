@@ -2,6 +2,7 @@ package br.com.osa.domain.model;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+import br.com.osa.domain.util.OverdraftPolicy;
 
 public class Account {
 
@@ -37,7 +38,7 @@ public class Account {
     BigDecimal updated = this.balance.add(amount);
 
     if (this.negativeDebt.compareTo(BigDecimal.ZERO) > 0) {
-      BigDecimal charge = this.negativeDebt.multiply(new BigDecimal("1.02"));
+      BigDecimal charge = OverdraftPolicy.calculateCharge(this.negativeDebt);
       if (updated.compareTo(charge) >= 0) {
         return new Account(this.id, this.userId, updated.subtract(charge), BigDecimal.ZERO);
       } else {
