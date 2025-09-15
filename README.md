@@ -16,6 +16,7 @@ Este projeto simula um sistema bancário moderno, com separação clara entre es
 | Segurança          | JWT + Spring Security          |
 | Arquitetura        | DDD + CQRS + Hexagonal         |
 | Containerização    | Docker + Docker Compose        |
+| Testes             | JUnit 5 + Mockito              |
 
 ---
 
@@ -99,3 +100,4 @@ Incluem exemplos completos de:
 ### 🧪 Testes e Qualidade
 - Testes de integração com Testcontainers Para validar fluxos completos com Redis, MongoDB e banco relacional em ambiente isolado;
 - Cobertura de código com JaCoCo + SonarQube Para identificar pontos frágeis e garantir qualidade contínua.
+
