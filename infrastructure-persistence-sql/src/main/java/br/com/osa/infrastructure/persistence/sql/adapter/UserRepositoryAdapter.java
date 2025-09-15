@@ -5,7 +5,6 @@ import br.com.osa.infrastructure.persistence.sql.mapper.UserMapper;
 import br.com.osa.infrastructure.persistence.sql.repository.UserJpaRepository;
 import br.com.osa.port.repository.UserRepositoryPort;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,18 +17,13 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
   }
 
   @Override
-  public User save(User user) {
-    return UserMapper.toDomain(repository.save(UserMapper.toEntity(user)));
+  public void save(User user) {
+    UserMapper.toDomain(repository.save(UserMapper.toEntity(user)));
   }
 
   @Override
   public Optional<User> findByLogin(String login) {
     return repository.findByLogin(login).map(UserMapper::toDomain);
-  }
-
-  @Override
-  public Optional<User> findById(UUID id) {
-    return repository.findById(id).map(UserMapper::toDomain);
   }
 
   @Override
