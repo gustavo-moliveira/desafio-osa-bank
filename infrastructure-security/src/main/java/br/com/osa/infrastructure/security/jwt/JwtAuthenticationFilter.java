@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+  private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
   private final TokenService tokenService;
 
@@ -29,19 +33,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       FilterChain chain) throws ServletException, IOException {
 
     String path = request.getServletPath();
-    System.out.println("[JwtFilter] Iniciando filtro para path: " + path);
+    logger.debug("Starting JWT filter for path: {}", path);
 
     String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-    System.out.println("[JwtFilter] Header Authorization: " + header);
-
     if (header != null && header.startsWith("Bearer ")) {
       String token = header.substring(7);
-      System.out.println("[JwtFilter] Token extraído: " + token);
 
       if (!token.isBlank()) {
         try {
           String userId = tokenService.parseSubject(token);
-          System.out.println("[JwtFilter] Subject (userId) extraído do token: " + userId);
+          logger.debug("Extracted subject from token for path {}", path);
 
           Principal principal = () -> userId;
 
@@ -69,30 +70,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
           org.springframework.security.core.context.SecurityContextHolder.getContext()
               .setAuthentication(auth);
-          System.out.println("[JwtFilter] Autenticação registrada no SecurityContext: " + auth);
+          logger.debug("Authentication registered in SecurityContext for userId={}", userId);
 
         } catch (Exception e) {
-          System.out.println("[JwtFilter] Erro ao validar token: " + e.getMessage());
-          e.printStackTrace();
+          logger.warn("Failed to validate JWT for path {}: {}", path, e.getMessage());
           response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
           return;
         }
       } else {
-        System.out.println("[JwtFilter] Token está em branco.");
+        logger.debug("Bearer token is blank for path: {}", path);
       }
     } else {
-      System.out.println("[JwtFilter] Nenhum token Bearer encontrado no header.");
+      logger.debug("No Bearer token found in Authorization header for path: {}", path);
     }
 
     chain.doFilter(request, response);
-    System.out.println("[JwtFilter] Filtro finalizado para path: " + path);
+    logger.debug("JWT filter finished for path: {}", path);
   }
 
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) {
     String path = request.getServletPath();
-    boolean ignorar = path.startsWith("/auth/");
-    System.out.println("[JwtFilter] shouldNotFilter? " + ignorar + " para path: " + path);
-    return ignorar;
+    boolean ignore = path.startsWith("/auth/");
+    logger.debug("shouldNotFilter? {} for path: {}", ignore, path);
+    return ignore;
   }
 }
