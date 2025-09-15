@@ -1,0 +1,159 @@
+{
+  "v": 10,
+  "name": "OSA Bank",
+  "folders": [
+    {
+      "v": 10,
+      "name": "Auth",
+      "folders": [],
+      "requests": [
+        {
+          "v": "15",
+          "name": "Cadastro",
+          "method": "POST",
+          "endpoint": "http://localhost:8080/auth/register",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": false
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"fullName\": \"João da Silva\",\n  \"cpf\": \"12345678909\",\n  \"login\": \"joao\",\n  \"password\": \"123456\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "15",
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "http://localhost:8080/auth/login",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "none",
+            "authActive": false
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"login\": \"joao\",\n  \"password\": \"123456\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [],
+      "variables": [],
+      "_ref_id": "coll_mfkmwonz_74b75aeb-38a9-433b-8c1b-7cffa7105a23"
+    },
+    {
+      "v": 10,
+      "name": "Commands",
+      "folders": [],
+      "requests": [
+        {
+          "v": "15",
+          "name": "Depósito",
+          "method": "POST",
+          "endpoint": "http://localhost:8080/commands/deposit",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "token": "<SEU_TOKEN>",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"amount\": 200.00\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "15",
+          "name": "Saque",
+          "method": "POST",
+          "endpoint": "http://localhost:8080/commands/withdraw",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "token": "<SEU_TOKEN>",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"amount\": 100.00\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [],
+      "variables": [],
+      "_ref_id": "coll_mfkmwonz_b01c3105-daa7-4439-a95d-968902b68a92"
+    },
+    {
+      "v": 10,
+      "name": "Queries",
+      "folders": [],
+      "requests": [
+        {
+          "v": "15",
+          "name": "Consulta de saldo e histórico",
+          "method": "GET",
+          "endpoint": "http://localhost:8080/queries/summary",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "bearer",
+            "token": "<SEU_TOKEN>",
+            "authActive": true
+          },
+          "body": {
+            "contentType": null,
+            "body": null
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [],
+      "variables": [],
+      "_ref_id": "coll_mfkmwonz_1221a51b-cd78-46f7-93c5-088f81d1b4b6"
+    }
+  ],
+  "requests": [],
+  "auth": {
+    "authType": "none",
+    "authActive": true
+  },
+  "headers": [],
+  "variables": [],
+  "_ref_id": "coll_mfkmwonz_f4e564d7-d312-441d-9f6c-4a0873585ca0"
+}
